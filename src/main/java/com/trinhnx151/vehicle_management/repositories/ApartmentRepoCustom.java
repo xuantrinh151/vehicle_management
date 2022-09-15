@@ -8,7 +8,4 @@ import org.springframework.data.domain.Pageable;
 public interface ApartmentRepoCustom {
 
     Page<ApartmentSearchSdo> search(ApartmentSearchSdi request, Pageable pageable);
-
-
-
 }
