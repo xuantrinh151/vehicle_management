@@ -61,18 +61,5 @@ public class ApartmentRepoCustomImpl implements ApartmentRepoCustom {
         return new PageImpl<>(listData, pageable, countAll);
     }
 
-//    @Override
-//    public Double getTotalUnpaidFines(Long id) {
-//        String sqlGetData = "SELECT SUM(r.fine_amount) AS total FROM apartment a ";
-//        Map<String, Object> queryParams = new HashMap<>();
-//        String sqlConditional = "INNER JOIN vehicle v ON a.id = v.apartment_id " +
-//                "INNER JOIN record r ON r.vehicle_id = v.id " +
-//                "WHERE a.`status` <> 2 AND r.payment_status = 0 " +
-//                "WHERE a.`status` <> 2 AND r.payment_status = 0 AND  a.id = :id  ";
-//
-//        Query query = em.createNativeQuery(sqlGetData + sqlConditional);
-//        queryParams.put("id", id);
-//        queryParams.forEach(query::setParameter);
-//        return (Double) query.getSingleResult();
-//    }
+
 }

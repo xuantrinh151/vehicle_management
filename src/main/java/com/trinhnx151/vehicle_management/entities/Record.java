@@ -14,6 +14,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Builder
 @Entity
+
 public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

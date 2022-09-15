@@ -9,6 +9,5 @@ public interface ApartmentRepoCustom {
 
     Page<ApartmentSearchSdo> search(ApartmentSearchSdi request, Pageable pageable);
 
-    //Double getTotalUnpaidFines(Long id);
 
 }
