@@ -192,8 +192,4 @@ public class RecordServiceImpl implements RecordService {
             apartmentRepo.save(apartment.get());
         }
     }
-
-    private void saveImages(RecordCreateSdi request,Long id) {
-
-    }
 }
