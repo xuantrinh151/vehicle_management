@@ -1,5 +1,6 @@
 package com.trinhnx151.vehicle_management.services.impl;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ArrayList;
 
@@ -77,7 +78,14 @@ public class RecordServiceImpl implements RecordService {
         recordRepo.save(record);
 
         //update unpaidFines when create record
-        updateTotalUnpaidFines(vehicle.get().getApartmentId());
+
+        if (vehicle.isPresent() && !record.getPaymentStatus()) {
+            Optional<Apartment> apartment = apartmentRepo.findById(vehicle.get().getApartmentId());
+            if (apartment.isPresent()) {
+                apartment.get().setTotalUnpaidFines(apartment.get().getTotalUnpaidFines() + record.getFineAmount());
+                apartmentRepo.save(apartment.get());
+            }
+        }
 
         //create images
         ArrayList<ImageUploadSdi> imageUploadSdiList = request.getImageList();
@@ -94,14 +102,18 @@ public class RecordServiceImpl implements RecordService {
         }
 
         //send mail
-        Optional<Apartment> apartment = apartmentRepo.findById(vehicle.get().getApartmentId());
-        if (!apartment.get().getHostName().equals("Unknown")) {
-            Email email = Email.builder()
-                    .recipient(apartment.get().getEmail())
-                    .msgBody("Số tiền bạn cần nộp là " + record.getFineAmount() + "\n\nĐây là hình ảnh vi phạm của bạn\n" + urlList.toString())
-                    .subject("Báo cáo vi phạm với xe: " + vehicle.get().getLicensePlates())
-                    .build();
-            emailService.sendSimpleMail(email);
+        if (vehicle.isPresent()) {
+            Optional<Apartment> apartment = apartmentRepo.findById(vehicle.get().getApartmentId());
+            if (apartment.isPresent()) {
+                if (!apartment.get().getHostName().equals("Unknown")) {
+                    Email email = Email.builder()
+                            .recipient(apartment.get().getEmail())
+                            .msgBody("Số tiền bạn cần nộp là " + record.getFineAmount() + "\n\nĐây là hình ảnh vi phạm của bạn\n" + urlList.toString())
+                            .subject("Báo cáo vi phạm với xe: " + vehicle.get().getLicensePlates())
+                            .build();
+                    emailService.sendSimpleMail(email);
+                }
+            }
         }
         return RecordCreateSdo.builder().id(record.getId()).build();
     }
@@ -115,15 +127,17 @@ public class RecordServiceImpl implements RecordService {
         } else {
             record.setFineAmount(500.0);
         }
-        recordRepo.save(record);
+
         Long oldVehicleId = recordRepo.findById(request.getId()).get().getVehicleId();
         Long newVehicleId = request.getVehicleId();
+        recordRepo.save(record);
+
         Optional<Vehicle> oldVehicle = vehicleRepo.findById(oldVehicleId);
         Optional<Vehicle> newVehicle = vehicleRepo.findById(newVehicleId);
 
         //update unpaidFines when update record
-        updateTotalUnpaidFines(oldVehicle.get().getApartmentId());
-        updateTotalUnpaidFines(newVehicle.get().getApartmentId());
+        oldVehicle.ifPresent(vehicle -> updateTotalUnpaidFines(vehicle.getApartmentId()));
+        newVehicle.ifPresent(vehicle -> updateTotalUnpaidFines(vehicle.getApartmentId()));
 
         //update images
         imageService.deleteByRecordId(record.getId());
@@ -141,14 +155,18 @@ public class RecordServiceImpl implements RecordService {
         }
 
         //send mail
-        Optional<Apartment> newApartment = apartmentRepo.findById(newVehicle.get().getApartmentId());
-        if (!newApartment.get().getHostName().equals("Unknown")) {
-            Email email = Email.builder()
-                    .recipient(newApartment.get().getEmail())
-                    .msgBody("Số tiền bạn cần nộp là " + record.getFineAmount() + "\n\nĐây là hình ảnh vi phạm của bạn\n" + urlList.toString())
-                    .subject("Báo cáo vi phạm với xe (Đã Update): " + newVehicle.get().getLicensePlates())
-                    .build();
-            emailService.sendSimpleMail(email);
+        if (newVehicle.isPresent()) {
+            Optional<Apartment> newApartment = apartmentRepo.findById(newVehicle.get().getApartmentId());
+            if (newApartment.isPresent()) {
+                if (!newApartment.get().getHostName().equals("Unknown")) {
+                    Email email = Email.builder()
+                            .recipient(newApartment.get().getEmail())
+                            .msgBody("Số tiền bạn cần nộp là " + record.getFineAmount() + "\n\nĐây là hình ảnh vi phạm của bạn\n" + urlList.toString())
+                            .subject("Báo cáo vi phạm với xe (Đã Update): " + newVehicle.get().getLicensePlates())
+                            .build();
+                    emailService.sendSimpleMail(email);
+                }
+            }
         }
         return RecordUpdateSdo.builder().id(record.getId()).build();
     }
