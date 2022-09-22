@@ -13,7 +13,6 @@ import java.util.Optional;
 
 public interface ImageRepo extends JpaRepository<Image,Long> {
     ArrayList<Image> findAllByRecordId(Long id);
-
     @Transactional
     @Modifying
     @Query(
