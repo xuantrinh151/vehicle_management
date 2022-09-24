@@ -25,8 +25,7 @@ public class VehicleCreateSdi {
     @NotEmpty(message = "Loại xe không được để trống")
     private String typeVehicle;
 
-    @NotNull
-    @NotEmpty(message = "không được để trống")
+    
     private Long apartmentId;
 
     public Vehicle toVehicle() {

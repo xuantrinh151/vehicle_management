@@ -4,32 +4,33 @@ import com.trinhnx151.vehicle_management.entities.Apartment;
 import com.trinhnx151.vehicle_management.entities.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 public interface VehicleRepo extends JpaRepository<Vehicle,Long>,VehicleRepoCustom {
 
     @Query(
-            value = "SELECT * FROM VEHICLE WHERE STATUS <> 2 AND ID = :id",
+            value = "SELECT * FROM vehicle WHERE STATUS <> 2 AND ID = :id",
             nativeQuery = true
     )
-    Optional<Vehicle> findById(Long id);
+    Optional<Vehicle> findById(@Param("id") Long id);
 
     @Query(
-            value = "SELECT * FROM VEHICLE WHERE STATUS <> 2 AND UPPER(license_plates) = :licensePlates",
+            value = "SELECT * FROM vehicle WHERE STATUS <> 2 AND UPPER(license_plates) = :licensePlates",
             nativeQuery = true
     )
-    Optional<Vehicle> findByLicensePlates(String licensePlates);
+    Optional<Vehicle> findByLicensePlates(@Param("licensePlates") String licensePlates);
 
     @Query(
-            value = "SELECT * FROM VEHICLE WHERE STATUS <> 2 AND UPPER(license_plates) = :licensePlates AND ID <> :ignoreId",
+            value = "SELECT * FROM vehicle WHERE STATUS <> 2 AND UPPER(license_plates) = :licensePlates AND ID <> :ignoreId",
             nativeQuery = true
     )
-    Optional<Vehicle> findByLicensePlates(String licensePlates,Long ignoreId);
+    Optional<Vehicle> findByLicensePlates(@Param("licensePlates") String licensePlates,@Param("ignoreId") Long ignoreId);
 
     @Query(
-            value = "SELECT * FROM VEHICLE WHERE ID = :id",
+            value = "SELECT * FROM vehicle WHERE ID = :id",
             nativeQuery = true
     )
-    Optional<Vehicle> findByIdWithAllStatus(Long id);
+    Optional<Vehicle> findByIdWithAllStatus(@Param("id") Long id);
 }

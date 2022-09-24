@@ -5,6 +5,7 @@ import com.trinhnx151.vehicle_management.entities.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ public interface ImageRepo extends JpaRepository<Image,Long> {
     @Transactional
     @Modifying
     @Query(
-            value = "DELETE FROM IMAGE WHERE record_id = :id",
+            value = "DELETE FROM image WHERE record_id = :id",
             nativeQuery = true
     )
-    void deleteByRecordId(Long id);
+    void deleteByRecordId(@Param("id") Long id);
 }

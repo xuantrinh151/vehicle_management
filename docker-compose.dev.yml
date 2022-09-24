@@ -1,0 +1,35 @@
+version: '3.8'
+#container => services
+services:
+  mariadb-springboot-container:
+    image: mariadb
+    container_name: mariadb-springboot-container
+    ports:
+      - 3309:3306
+    volumes:
+      - mariadb-springboot-data:/var/lib/mysql
+      - mariadb-springboot-config-deamond:/etc/mysql/conf.d
+    networks:
+      - backend
+    environment:
+      MARIADB_ROOT_PASSWORD: trinhxq2
+      MARIADB_DATABASE: vehicle_management
+
+  vehicle_management_v1.0.1:
+    image: vehicle_management:v1.0.1
+    container_name: vehicle_management_v1.0.1
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/app
+    networks:
+      - backend
+
+#create networks
+networks:
+  backend:
+    name: vehicle_management-network
+#create volume
+volumes:
+  mariadb-springboot-data:
+  mariadb-springboot-config-deamond:

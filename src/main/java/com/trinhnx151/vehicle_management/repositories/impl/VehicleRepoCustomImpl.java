@@ -31,7 +31,7 @@ public class VehicleRepoCustomImpl implements VehicleRepoCustom {
         String sqlCountAll = "SELECT COUNT(1) ";
         String sqlGetData = "SELECT V.id,V.apartment_id,V.license_plates,V.vehicle_company,V.type_vehicle,V.`status` ";
         StringBuilder sqlConditional = new StringBuilder();
-        sqlConditional.append("FROM VEHICLE V ");
+        sqlConditional.append("FROM vehicle V ");
         sqlConditional.append("INNER JOIN apartment A ON A.id = V.apartment_id ");
         sqlConditional.append("WHERE V.`status` <> 2 ");
         if (!keyword.isEmpty()) {
